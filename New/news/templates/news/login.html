@@ -1,0 +1,14 @@
+{%extends 'news/base.html'%}
+{%load static%}
+{%block title%}
+Login page
+{%endblock%}
+{%block content%}
+ <form method="post">
+     {%csrf_token%}
+
+     <button type="submit">Login</button>
+
+
+ </form>
+{%endblock%}

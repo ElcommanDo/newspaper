@@ -1,0 +1,57 @@
+{%extends 'news/base.html'%}
+
+{%load static%}
+{%load i18n%}
+{%block title%}
+
+newspaper
+{%endblock%}
+{%block content%}
+<!-- this for translation site doesn`t work yet
+<h1>{%trans "translate this page" %}</h1>
+<form action="{%url 'set_language' %}" method="post">
+    {%csrf_token%}
+    <input type="hidden" name="text" value="{{redirect_to}}">
+    <select name="language">
+
+        {%get_available_languages as LANGUAGES%}
+        {%get_language_info_list for LANGUAGES as languages%}
+        {%for language in languages%}
+        <option value="{{language.code}}" {%if language.code == LANGUAGE_CODE%}selected {%endif%}>
+
+            {{language.name_local}} ({{language.code}})
+
+        </option>
+        {%endfor%}
+    </select>
+    <input type="submit" value="Go">
+</form>
+-->
+{%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+
+{%endfor%}
+{%endif%}
+{%for post in posts%}
+
+ <div class="border mb-4">
+     <img src="{{post.image.url}}" width="100%">
+           <div class="p-3">
+               <p style="font-size:22px; font-weight:550;">{{post.content}}</p>
+        <h6>Category :<a href="{%url 'category_details' post.category.id%}"> {{post.category}}</a></h6>
+        <a href="{%url 'post_details' post.id%}" class="but btn  mb-4">Add Comment</a>
+           <div class="border-top ">
+               <p class="mt-2" style="color:#aeb2b5"> posted in {{post.post_date}}</p>
+
+           </div>
+         </div>
+      </div>
+          {%empty%}
+
+           <div class="border text-center"><h3> No posts yet</h3></div>
+          {%endfor%}
+
+{%endblock%}

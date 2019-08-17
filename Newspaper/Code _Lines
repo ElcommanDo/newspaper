@@ -1,0 +1,943 @@
+from django.contrib import admin
+from django.urls import path,include
+from django.contrib.staticfiles.urls import static
+from Newspaper import settings
+from news.views import login_Admin,logout_user
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include('news.urls')),
+    path('login/',login_Admin,name='login'),
+    path('logout/',logout_user,name='logout'),
+    path('dashboard/',include('dashboard.urls')),
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+a{
+text-decoration:none;
+}
+.navbar{
+background-color:#353942;
+
+}
+.navbar h1{
+color:white;
+
+}
+
+.navbar a{
+color:#606368;
+margin:5px;
+text-decoration:none;
+}
+.navbar a:hover{
+color:white;
+
+}
+
+.but {
+background-color:#007bff;
+color:white;
+
+}
+.ss{
+background-color:#f7f7f7;
+width:100%;
+}
+.side{
+background-color:#36404e;
+color:white;
+}
+span
+{
+color:#72abd5;
+}
+.big_link{
+
+text-decoration:none;
+
+}
+.row{
+height:100%;
+}
+.active{
+padding:15px;
+margin-bottom:5px;
+background-color:#313a46;
+display:block;
+text-decoration:none;
+}
+.a{
+color:white;
+padding:15px;
+margin-bottom:5px;
+display:block;
+
+
+}
+.div{
+display:inline-block;
+float:left;
+padding:16px;
+margin:15px;
+width:30%
+
+}
+.div:hover{
+text-decoration:none;
+}
+.side a:visited{
+padding:15px;
+margin-bottom:5px;
+background-color:#313a46;
+display:block;
+text-decoration:none;
+
+
+}
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+{%load static%}
+{%load cat_tag%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{%block title%}Newspaper{%endblock%}</title>
+    <link href="{%static 'images/2.png'%}" rel="shortcut icon" >
+    <link href="{%static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{%static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div>
+        <img class="mb-2" src="{%static 'images/2.png'%}" width="50px">
+        <h1 style="display:inline-block;">NEWSPAPER</h1>
+      </div>
+       <div>
+            <a href="#">About</a>
+            <a href="#">Contact us</a>
+           {%if user.is_authenticated%}
+           <a href="{%url 'logout'%}">Logout</a>
+           <a href="{%url 'dashboard'%}">Dashboard</a>
+           {%else%}
+           <a href="{%url 'login'%}">Login</a>
+           {%endif%}
+       </div>
+
+
+    </nav>
+
+  </header>
+  <section>
+    <div class="container">
+     <div class="row pt-4">
+       <div class="col-md-8">
+         {%block content%}
+
+           {%endblock%}
+
+
+       </div>
+         <div class="col-md-4">
+             <div class="border">
+                <div class=" ss border-bottom mb-3">
+                   <h3 class="p-2">search</h3>
+                </div>
+               <div class="pt-2 pb-4 pl-3">
+                 <form method="get">
+                     <input style=" height:30px;width:250px;" type="search" placeholder="  search for..." name="ss">
+                     <button type="submit" class="btn-secondary">Go!</button>
+                 </form>
+
+             </div>
+             </div>
+              {% all_categories %}
+              {% recent_news %}
+
+         </div>
+
+     </div>
+    </div>
+  </section>
+
+
+<script src="{%static 'js/jquery.js' %}"></script>
+<script src="{%static 'js/popper.js'%}"></script>
+<script src="{%static 'js/bootstrap.min.js'%}"></script>
+<script src="{%static 'js/fontawosome-all.js'%}"></script>
+</body>
+</html>
+<div class="border mt-4">
+                <div class=" ss border-bottom mb-3">
+                   <h3 class="p-2">Categories</h3>
+                </div>
+               <div class="mt-2">
+                <ul style="list-style-type:none;">
+                   {%for cat in categories%}
+                    <li><a href="{%url 'category_details' cat.id %}">{{cat.title}}</a> </li>
+                    {%empty%}
+                 <li>No Categories</li>
+                   {%endfor%}
+                </ul>
+              </div>
+             </div>
+{%extends 'news/base.html'%}
+{%load static%}
+{%block title%}
+{{category.title}} details
+{%endblock%}
+{%block content%}
+ <div class="border mb-4">
+           <div class="p-3">
+             <h3>{{category.title}}</h3>
+               <p style="font-size:22px; font-weight:550;">{{category.content}}</p>
+
+           </div>
+         </div>
+
+
+
+<h1> related posts in {{category.title}}</h1>
+
+{%for post in posts%}
+
+ <div class="border mb-4">
+     <img src="{{post.image.url}}" width="100%">
+           <div class="p-3">
+               <p style="font-size:22px; font-weight:550;">{{post.content}}</p>
+        <h6>Category :<a href="#"> {{post.category}}</a></h6>
+        <a href="{%url 'post_details' post.id%}" class="btn mb-4">Read More -></a>
+           <div class="border-top ">
+               <p class="mt-2" style="color:#aeb2b5"> posted in {{post.post_date}}</p>
+
+           </div>
+         </div>
+      </div>
+          {%empty%}
+           <h2> No posts yet</h2>
+          {%endfor%}
+
+{%endblock%}
+{%extends 'news/base.html'%}
+{%load static%}
+{%block title%}
+newspaper
+{%endblock%}
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+{%endfor%}
+{%endif%}
+{%for post in posts%}
+
+ <div class="border mb-4">
+     <img src="{{post.image.url}}" width="100%">
+           <div class="p-3">
+               <p style="font-size:22px; font-weight:550;">{{post.content}}</p>
+        <h6>Category :<a href="{%url 'category_details' post.category.id%}"> {{post.category}}</a></h6>
+        <a href="{%url 'post_details' post.id%}" class="but btn  mb-4">Add Comment</a>
+           <div class="border-top ">
+               <p class="mt-2" style="color:#aeb2b5"> posted in {{post.post_date}}</p>
+
+           </div>
+         </div>
+      </div>
+          {%empty%}
+
+           <div class="border text-center"><h3> No posts yet</h3></div>
+          {%endfor%}
+
+{%endblock%}
+{%extends 'news/base.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Login page
+{%endblock%}
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+{%endfor%}
+{%endif%}
+<div class="col-md-9 text-center border ">
+
+ <form method="post">
+     {%csrf_token%}
+     {{form|crispy}}
+     <button class="btn-success btn" type="submit">Login</button>
+
+
+ </form>
+    </div>
+{%endblock%}
+{%extends 'news/base.html'%}
+{%load static%}
+{%block title%}
+Logout page
+{%endblock%}
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+{%endfor%}
+{%endif%}
+{%endblock%}
+{%extends 'news/base.html' %}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+{{post.title}} details
+{%endblock%}
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+    {{message}}
+</div>
+{%endfor%}
+{%endif%}
+ <div class="border mb-4">
+     <img src="{{post.image.url}}">
+           <div class="p-3">
+               <p style="font-size:22px; font-weight:550;">{{post.content}}</p>
+        <h6>Category :<a href="{%url 'category_details' post.category.id%}"> {{post.category}}</a></h6>
+           <div class="border-top ">
+               <p class="mt-2" style="color:#aeb2b5"> posted in {{post.post_date}}</p>
+
+           </div>
+         </div>
+
+
+      </div>
+<div class="mt-3">
+<h2>comments</h2>
+     {%for comment in comments%}
+    <div class="border mt-3 mb-4 ">
+
+    <h2 class="p-2">{{comment.title}}</h2>
+
+        <p class="p-2">{{comment.content}}</p>
+    </div>
+    {%empty%}
+    <h5>No comments Yet!! </h5>
+    {%endfor%}
+
+    </div>
+<div class="mt-5">
+    <h3><span>Add new comment....</span></h3>
+    <form method="post">
+    {%csrf_token%}
+    {{comment_form|crispy}}
+    <button class="btn btn-success" type="submit">Add comment</button>
+
+    </form>
+</div>
+
+{%endblock%}
+<div class="border mt-4">
+                <div class=" ss border-bottom mb-3">
+                   <h3 class="p-2">Recent News</h3>
+                </div>
+               <div class="pt-2 pb-4 pl-3">
+                <ul>
+                  {%for post in posts%}
+                    <li><a href="{%url 'post_details' post.id %}">{{post.title}}</a></li>
+                    {%empty%}
+                  <li> No Recent News</li>
+                  {%endfor%}
+
+                </ul>
+              </div>
+             </div>
+from django import template
+from news.models import Category,Post
+register = template.Library()
+@register.inclusion_tag('news/categories.html')
+
+def all_categories():
+    categs = Category.objects.all()
+    context = {'categories':categs}
+    return context
+@register.inclusion_tag('news/recentNews.html')
+def recent_news():
+    context = {
+        'posts':Post.objects.all()[0:6],
+    }
+    return context
+from django.contrib import admin
+from .models import Category,SubCategory,Post,Comment
+# Register your models here.
+
+class category(admin.ModelAdmin):
+    list_display = ('title','content')
+    list_editable = ('content',)
+    list_display_links = ('title',)
+admin.site.register(Category,category)
+class subcategory(admin.ModelAdmin):
+    list_display = ('title','content')
+    list_editable = ('content',)
+    list_display_links = ('title',)
+
+admin.site.register(SubCategory,subcategory)
+admin.site.register(Comment)
+admin.site.register(Post)
+
+from django import forms
+from .models import Post,Category,User,SubCategory,Comment
+class Admin_form(forms.ModelForm):
+    username = forms.CharField(required=True,max_length=120)
+    password = forms.CharField(required=True,max_length=20,widget=forms.PasswordInput)
+    class Meta:
+        model = User
+        fields = ('username','password')
+
+from django.db import models
+from django.contrib.auth.models import User
+from passlib.hash import pbkdf2_sha256
+
+# Create your models here.
+'''
+class Admin(models.Model):
+    username = models.CharField(max_length=120)
+    password = models.CharField(max_length=20)
+    def password_ecrypt(self,):
+        self.password = pbkdf2_sha256.encrypt(self.password,rounds=12000,salt_size=32)
+        return self.password
+
+    def __str__(self):
+        return self.username
+        '''
+class Category(models.Model):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
+    def __str__(self):
+        return self.title
+class SubCategory(models.Model):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
+    category =models.ForeignKey(Category,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
+class Post(models.Model):
+    title = models.CharField(max_length=50)
+    content = models.TextField()
+    post_date = models.DateTimeField(null=True, blank=True ,auto_now_add=True)
+    image = models.ImageField(blank=True,null=True,upload_to='post_pics')
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory,on_delete=models.CASCADE)
+    admin = models.ForeignKey(User,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.title
+    class Meta:
+        ordering = ('-post_date',)
+class Comment(models.Model):
+    title = models.CharField(blank=True ,null= True,max_length=50)
+    content = models.TextField()
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    post_date = models.DateTimeField(null=True, blank=True ,auto_now_add=True)
+    def __str__(self):
+        return self.content
+
+from django.urls import path
+from .views import home,post_details, category_details
+urlpatterns = [
+    path('',home,name='home'),
+    path('post_details/<int:post_id>',post_details,name='post_details'),
+    path('category_details/<int:cat_id>',category_details,name='category_details'),
+
+]
+from django.shortcuts import render,redirect
+from .forms import Admin_form
+from .models import Category,Post,Comment
+from dashboard.forms import commentform
+from django.contrib.auth import login,logout,authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+# Create your views here.
+def home(request):
+    posts = Post.objects.all()
+
+    context = {'posts':posts}
+    return render(request,'news/index.html',context)
+def post_details(request,post_id):
+    post = Post.objects.get(id=post_id)
+    comments = Comment.objects.filter(post=post)
+    if request.method == 'POST':
+      comment_form = commentform(request.POST)
+      if comment_form.is_valid():
+        post = Post.objects.get(id = post_id)
+        new_comment=comment_form.save(commit=False)
+        new_comment.post = post
+        new_comment.save()
+        comment_form= commentform()
+    else:
+      comment_form= commentform()
+    context={'post':post,'comment_form':comment_form,'comments':comments}
+    return render(request,'news/post_details.html',context)
+def category_details(request,cat_id):
+    cat = Category.objects.get(id=cat_id)
+    posts = Post.objects.filter(category=cat)
+
+    context = {'category':cat,'posts':posts}
+    return render(request,'news/category_details.html',context)
+def login_Admin(request):
+
+    if request.method == 'POST':
+        adminForm = Admin_form(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        admin = authenticate(request,username=username,password=password)
+        if admin is not None:
+          login(request,admin)
+          messages.success(request, '{} logged in successfully'.format(username))
+          return redirect('/dashboard/dashboard')
+        else:
+            messages.warning(request,'this username  is not authorized to login ')
+            return redirect('login')
+    else:
+        adminForm = Admin_form()
+    return render(request,'news/login.html',{'form':adminForm})
+@login_required()
+def logout_user(request):
+    logout(request)
+    messages.success(request,'{} logged out successfully '.format(request.user.username))
+    return redirect('home')
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Add category
+{%endblock%}
+
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+{%if message.tag == 'warning'%}
+<div class="alert alert-{{message.tags}}">
+
+    {{message}}
+</div>
+{%endif%}
+{%endfor%}
+{%endif%}
+<div class="col-md-7">
+<form method="post">
+    {%csrf_token%}
+    {{category_form|crispy}}
+    <button class="btn btn-success" type="submit">Add Category</button>
+
+</form>
+
+</div>
+
+{%endblock%}
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Add category
+{%endblock%}
+
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+{%if message.tag == 'warning'%}
+<div class="alert alert-{{message.tags}}">
+
+    {{message}}
+</div>
+{%endif%}
+{%endfor%}
+{%endif%}
+<div class="col-md-7">
+<form method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    {{post_form|crispy}}
+    <button class="btn btn-success" type="submit">Add Post</button>
+
+</form>
+
+</div>
+
+{%endblock%}
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Add subcategory
+{%endblock%}
+
+{%block content%}
+{%if messages%}
+{%for message in messages%}
+{%if message.tag == 'warning'%}
+<div class="alert alert-{{message.tags}}">
+
+    {{message}}
+</div>
+{%endif%}
+{%endfor%}
+{%endif%}
+<div class="col-md-7">
+<form method="post">
+    {%csrf_token%}
+    {{subcategory_form|crispy}}
+    <button class="btn btn-success" type="submit">Add SubCategory</button>
+
+</form>
+
+</div>
+
+{%endblock%}
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%block title%}
+All categories
+{%endblock%}
+{%block content%}
+<table class="border text-center" cellpadding="15">
+
+    <tr style="background-color:#188ae2; color:white">
+        <th>#</th>
+        <th>title</th>
+         <th>description</th>
+        <th>action</th>
+
+    </tr>
+    {%for cat in cats%}
+    <tr>
+        <td>{{cat.id}}</td>
+        <td>{{cat.title}}</td>
+        <td>{{cat.content}}</td>
+        <td>
+            <a class="btn btn-success" href="{%url 'update_category' cat.id%}"><i class="far fa-edit"></i></a>
+             <a class="btn btn-danger" href="{%url 'delete_category' cat.id%}"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+     {%empty%}
+    <tr>
+        <td colspan="4"> there is no posts yet</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endblock%}
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%block title%}
+All categories
+{%endblock%}
+{%block content%}
+<table class="border text-center" cellpadding="15">
+
+    <tr style="background-color:#188ae2; color:white">
+        <th>#id</th>
+        <th>title</th>
+
+        <th>image</th>
+        <th> published by</th>
+        <th>action</th>
+
+    </tr>
+    {%for post in posts%}
+    <tr>
+        <td>{{post.id}}</td>
+        <td>{{post.title}}</td>
+        <td><img src="{{post.image.url}}" width="120px"></td>
+        <td>{{post.admin.username}}</td>
+        <td>
+            <a class="btn btn-success" href="{%url 'update_post' post.id%}"><i class="far fa-edit"></i></a>
+             <a class="btn btn-danger" href="{%url 'delete_post' post.id%}"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+    {%empty%}
+    <tr>
+        <td colspan="5"> there is no posts yet</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endblock%}
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{%block title%}dashboard{%endblock%}</title>
+    <link href="{%static 'images/2.png'%}" rel="shortcut icon" >
+    <link href="{%static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{%static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+
+
+<div class="side col-md-2">
+    <h2 class="mt-3">NEWS<span>PORTAL</span></h2>
+    <h6 class="mt-2" style="color:#6e7170">NAVIGATION</h6>
+
+    <a class="a" href="{%url 'dashboard' %}" > <i class="fas fa-columns"></i> Dashboard</a>
+    <a class="a" href="{%url 'add_category' %}"><i class="fas fa-align-justify"></i> Add Category</a>
+    <a class="a"  href="{%url 'add_subcategory' %}" ><i class="fas fa-align-justify"></i> Add Sub Category</a>
+    <a class="a"   href="{%url 'add_post' %}"><i class="fas fa-align-justify"></i> Add posts</a>
+    <a class="a"  href="#" ><i class="far fa-comments"></i> Comments</a>
+    <a class=" m-3 btn btn-success" href="{%url 'home'%}">Main page</a>
+</div>
+<div class="col-md-10">
+    {%block content%}
+    {%if messages%}
+{%for message in messages%}
+<div class="alert alert-{{message.tags}}">
+
+    {{message}}
+</div>
+{%endfor%}
+{%endif%}
+    <div class="border div">
+        <a href="{%url 'all_categories'%}">
+        <h4> categories list</h4>
+        </a>
+        <h2>{{categories.count}}</h2>
+
+    </div>
+    <div class="border div">
+        <a href="#">
+        <h4> SubCategories list</h4>
+        </a>
+        <h2>{{subcategories.count}}</h2>
+
+    </div>
+    <div class="border div">
+        <a href="{%url 'all_posts'%}">
+        <h4> Posts list</h4>
+        </a>
+        <h2>{{posts.count}}</h2>
+
+    </div>
+    <div class="border div">
+        <a href="#">
+        <h4> Comments list</h4>
+        </a>
+        <h2>{{comments.count}}</h2>
+
+    </div>
+
+    {%endblock%}
+
+    </div>
+</div>
+<script src="{%static 'js/fontawosome-all.js'%}"></script>
+</body>
+</html>
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Update category
+{%endblock%}
+
+{%block content%}
+
+<div class="col-md-7">
+<form method="post">
+    {%csrf_token%}
+    {{updatecategory_form|crispy}}
+    <button class="btn btn-success" type="submit">update Category</button>
+
+</form>
+
+</div>
+
+{%endblock%}
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%load crispy_forms_tags%}
+{%block title%}
+Update post
+{%endblock%}
+
+{%block content%}
+
+<div class="col-md-7">
+<form method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    {{updatepost_form|crispy}}
+    <button class="btn btn-success" type="submit">update post</button>
+
+</form>
+
+</div>
+
+{%endblock%}
+from django import forms
+from news.models import Category,Post,Comment,SubCategory
+class commentform(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('title','content')
+class postform(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ('title','content','category','subcategory','admin','image')
+class categoryform(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ('title','content')
+class subcategoryform(forms.ModelForm):
+    class Meta:
+        model = SubCategory
+        fields = ('title','content','category')
+from django.urls import path
+from . import views
+
+urlpatterns = [
+   path('dashboard/',views.dashboard,name='dashboard'),
+    path('add_category/',views.add_category,name='add_category'),
+    path('add_subcategory/',views.add_subcategory,name='add_subcategory'),
+    path('add_post/',views.add_post,name='add_post'),
+    path('all_categories/',views.all_categories,name='all_categories'),
+    path('all_posts/',views.all_posts,name='all_posts'),
+    path('update_categories/<int:cat_id>',views.update_category,name='update_category'),
+    path('delete_categories/<int:cat_id>',views.delete_category,name='delete_category'),
+    path('update_posts/<int:post_id>',views.update_post,name='update_post'),
+    path('delete_post/<int:post_id>',views.delete_post,name='delete_post'),
+
+
+
+
+]
+from django.shortcuts import render,redirect,HttpResponseRedirect
+from news.models import Post,Comment,SubCategory,Category
+from django.contrib import  messages
+from django.contrib.auth.decorators import login_required
+from.forms import categoryform,subcategoryform,postform,commentform
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import CreateView,UpdateView,DeleteView
+
+# Create your views here.
+@login_required()
+def dashboard(request):
+    posts = Post.objects.all()
+    comments = Comment.objects.all()
+    categories = Category.objects.all()
+    subcategories = SubCategory.objects.all()
+    context = {
+      'posts':posts,
+      'comments':comments,
+      'categories':categories,
+      'subcategories':subcategories
+
+    }
+    return render(request,'dashboard/dashboard.html',context)
+@login_required()
+def add_category(request):
+    if request.method == 'POST':
+      cat_form = categoryform(request.POST)
+      if cat_form.is_valid():
+        cat_form.save()
+        messages.success(request,'Category added successfully')
+        return redirect('dashboard')
+      else:
+          messages.warning(request,' the data is not valid')
+          return redirect('add_category')
+
+    else:
+       cat_form = categoryform()
+    context = {'category_form':cat_form}
+    return render(request,'dashboard/add_category.html',context)
+@login_required()
+def add_subcategory(request):
+    if request.method == 'POST':
+      subcat_form = subcategoryform(request.POST)
+      if subcat_form.is_valid():
+        subcat_form.save()
+
+        messages.success(request,'SubCategory added successfully')
+        return redirect('dashboard')
+      else:
+          messages.warning(request,' the data is not valid')
+          return redirect('add_category')
+
+    else:
+       subcat_form = subcategoryform()
+    context = {'subcategory_form':subcat_form}
+    return render(request,'dashboard/add_subcategory.html',context)
+@login_required()
+def add_post(request):
+    if request.method == 'POST':
+      post_form = postform(request.POST,request.FILES)
+      if post_form.is_valid():
+        post_form.save()
+
+        messages.success(request,'post added successfully')
+        return redirect('dashboard')
+      else:
+          messages.warning(request,' the data is not valid')
+          return redirect('add_category')
+
+    else:
+       post_form= postform()
+    context = {'post_form':post_form}
+    return render(request,'dashboard/add_post.html',context)
+def all_categories(request):
+    context={'cats':Category.objects.all()}
+    return render(request,'dashboard/all_categories.html',context)
+def all_posts(request):
+    context={'posts':Post.objects.all()}
+    return render(request,'dashboard/all_posts.html',context)
+@login_required()
+def update_category(request,cat_id):
+    category= Category.objects.get(id=cat_id)
+    if request.method == 'POST':
+      cat_form = categoryform(request.POST,instance=category)
+      if cat_form.is_valid():
+        cat_form.save()
+        messages.success(request,'Category updated successfully')
+        return redirect('/dashboard/all_categories')
+      else:
+          messages.warning(request,' the data is not valid')
+
+
+    else:
+       cat_form = categoryform(instance=category)
+    context = {'updatecategory_form':cat_form}
+    return render(request,'dashboard/update_category.html',context)
+@login_required()
+def delete_category(request,cat_id):
+    deleted_cat = Category.objects.get(id=cat_id)
+    deleted_cat.delete()
+    return redirect('/dashboard/all_categories')
+@login_required()
+def update_post(request,post_id):
+    post = Post.objects.get(id=post_id)
+    if request.method == 'POST':
+      post_form = postform(request.POST,request.FILES,instance=post)
+      if post_form.is_valid():
+        post_form.save()
+        messages.success(request,'post updated successfully')
+        return redirect('/post_details/'+str(post_id))
+      else:
+          messages.warning(request,' the data is not valid')
+
+
+    else:
+       post_form = postform(instance=post)
+    context = {'updatepost_form':post_form}
+    return render(request,'dashboard/update_post.html',context)
+@login_required()
+def delete_post(request,post_id):
+    deleted_post = Post.objects.get(id=post_id)
+    deleted_post.delete()
+    return redirect('/dashboard/all_posts')
+def search(request):
+    return redirect('post_details')

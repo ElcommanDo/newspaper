@@ -1,0 +1,28 @@
+.navbar{
+background-color:#353942;
+
+}
+.navbar h1{
+color:white;
+
+}
+
+.navbar a{
+color:#606368;
+margin:5px;
+text-decoration:none;
+}
+.navbar a:hover{
+color:white;
+
+}
+
+.btn{
+background-color:#007bff;
+color:white;
+
+}
+.ss{
+background-color:#f7f7f7;
+width:100%;
+}

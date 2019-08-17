@@ -1,0 +1,35 @@
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%block title%}
+All categories
+{%endblock%}
+{%block content%}
+<table class="border text-center" cellpadding="15">
+
+    <tr style="background-color:#188ae2; color:white">
+        <th>#id</th>
+        <th>title</th>
+
+        <th>image</th>
+        <th> published by</th>
+        <th>action</th>
+
+    </tr>
+    {%for post in posts%}
+    <tr>
+        <td>{{post.id}}</td>
+        <td>{{post.title}}</td>
+        <td><img src="{{post.image.url}}" width="120px"></td>
+        <td>{{post.admin.username}}</td>
+        <td>
+            <a class="btn btn-success" href="{%url 'update_post' post.id%}"><i class="far fa-edit"></i></a>
+             <a class="btn btn-danger" href="{%url 'delete_post' post.id%}"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+    {%empty%}
+    <tr>
+        <td colspan="5"> there is no posts yet</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endblock%}

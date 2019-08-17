@@ -1,0 +1,32 @@
+{%extends 'dashboard/dashboard.html'%}
+{%load static%}
+{%block title%}
+All categories
+{%endblock%}
+{%block content%}
+<table class="border text-center" cellpadding="15">
+
+    <tr style="background-color:#188ae2; color:white">
+        <th>#</th>
+        <th>title</th>
+         <th>description</th>
+        <th>action</th>
+
+    </tr>
+    {%for cat in cats%}
+    <tr>
+        <td>{{cat.id}}</td>
+        <td>{{cat.title}}</td>
+        <td>{{cat.content}}</td>
+        <td>
+            <a class="btn btn-success" href="{%url 'update_category' cat.id%}"><i class="far fa-edit"></i></a>
+             <a class="btn btn-danger" href="{%url 'delete_category' cat.id%}"><i class="fas fa-trash"></i></a>
+        </td>
+    </tr>
+     {%empty%}
+    <tr>
+        <td colspan="4"> there is no posts yet</td>
+    </tr>
+    {%endfor%}
+</table>
+{%endblock%}
